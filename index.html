@@ -46,6 +46,13 @@
   <div id="messages"></div>
   <input id="msg" placeholder="Mesajını yaz..." />
   <button onclick="sendMessage()">Gönder</button>
+  // Enter ile mesaj gönderme
+document.getElementById("msg").addEventListener("keydown", function (e) {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault(); // alt satırı engelle
+    sendMessage();
+  }
+});
 </div>
 
 <!-- Firebase (compat) -->
