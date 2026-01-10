@@ -18,6 +18,7 @@
       overflow-y: auto;
       border: 1px solid #444;
       padding: 10px;
+      margin-bottom: 10px;
     }
     input, button {
       width: 100%;
@@ -31,6 +32,11 @@
       font-weight: bold;
       cursor: pointer;
     }
+    .admin {
+      color: #ff5555;
+      cursor: pointer;
+      margin-left: 10px;
+    }
   </style>
 </head>
 <body>
@@ -42,11 +48,16 @@
   <button onclick="sendMessage()">Gönder</button>
 </div>
 
-<!-- Firebase (compat) -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
+  /************ AYARLAR ************/
+  const ADMIN_KEY = "Nuri_46_"; // 🔴 BUNU DEĞİŞTİR
+  /********************************/
+
+  // Firebase config (seninki)
   const firebaseConfig = {
     apiKey: "AIzaSyBkdgxCEFNNhZr7lCC4pCo8ENH_E3XXV_I",
     authDomain: "itirafanonimleri.firebaseapp.com",
@@ -59,28 +70,65 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
+  /************ ANONIM ID ************/
+  let anonId = localStorage.getItem("anonId");
+  if (!anonId) {
+    anonId = "Anonim#" + Math.floor(1000 + Math.random() * 9000);
+    localStorage.setItem("anonId", anonId);
+  }
+
+  /************ ADMIN KONTROL ************/
+  let isAdmin = localStorage.getItem("admin") === ADMIN_KEY;
+  if (!isAdmin) {
+    const key = prompt("Admin girişi (boş bırak geç):");
+    if (key === ADMIN_KEY) {
+      localStorage.setItem("admin", ADMIN_KEY);
+      location.reload();
+    }
+  }
+
   const messagesDiv = document.getElementById("messages");
 
+  /************ MESAJLARI GÖSTER ************/
   db.collection("messages")
     .orderBy("time")
     .onSnapshot(snapshot => {
       messagesDiv.innerHTML = "";
       snapshot.forEach(doc => {
-        messagesDiv.innerHTML += `<p>🕵️ ${doc.data().text}</p>`;
+        const d = doc.data();
+        const delBtn = isAdmin
+          ? `<span class="admin" onclick="deleteMsg('${doc.id}')">🗑️</span>`
+          : "";
+
+        messagesDiv.innerHTML += `
+          <p>
+            <b>${d.user}</b>: ${d.text}
+            ${delBtn}
+          </p>
+        `;
       });
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
     });
 
+  /************ MESAJ GÖNDER ************/
   function sendMessage() {
     const msg = document.getElementById("msg");
     if (msg.value.trim() === "") return;
 
     db.collection("messages").add({
+      user: anonId,
       text: msg.value,
       time: Date.now()
     });
 
     msg.value = "";
+  }
+
+  /************ MESAJ SİL (ADMIN) ************/
+  function deleteMsg(id) {
+    if (confirm("Mesaj silinsin mi?")) {
+      db.collection("messages").doc(id).delete();
+    }
   }
 </script>
 
