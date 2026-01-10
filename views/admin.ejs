@@ -1,0 +1,29 @@
+<h1>Admin Panel</h1>
+
+<table border="1">
+  <tr>
+    <th>Kullanıcı</th>
+    <th>Mesaj</th>
+    <th>Durum</th>
+    <th>İşlem</th>
+  </tr>
+
+  <% messages.forEach(msg => { %>
+    <tr>
+      <td><%= msg.userId.username %></td>
+      <td><%= msg.content %></td>
+      <td><%= msg.deleted ? "Silindi" : "Aktif" %></td>
+      <td>
+        <% if(!msg.deleted) { %>
+          <form style="display:inline;" action="/message/delete/<%= msg._id %>" method="POST">
+            <button type="submit">Sil</button>
+          </form>
+        <% } else { %>
+          <form style="display:inline;" action="/message/restore/<%= msg._id %>" method="POST">
+            <button type="submit">Geri Al</button>
+          </form>
+        <% } %>
+      </td>
+    </tr>
+  <% }) %>
+</table>
