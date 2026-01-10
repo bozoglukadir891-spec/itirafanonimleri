@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tamamen anonim sohbet forum platformu - Kimliğiniz gizli kalır, özgürce sohbet edin!">
+    <meta name="keywords" content="anonim forum, gizli sohbet, türkçe forum, anonim tartışma">
+    <title>Anonim Forum - Özgür ve Gizli Sohbet Platformu</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Google Sign-In -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-user-secret"></i>
+                    <span>Anonim Forum</span>
+                </div>
+                
+                <nav class="nav">
+                    <a href="#" class="nav-link active" data-page="forum">
+                        <i class="fas fa-home"></i> Ana Sayfa
+                    </a>
+                    <a href="#" class="nav-link" data-page="categories">
+                        <i class="fas fa-th-large"></i> Kategoriler
+                    </a>
+                    <a href="#" class="nav-link admin-only" data-page="admin" style="display: none;">
+                        <i class="fas fa-shield-alt"></i> Admin
+                    </a>
+                </nav>
+                
+                <div class="user-section">
+                    <!-- Login Button (shown when not logged in) -->
+                    <div id="googleSignInButton" class="google-signin"></div>
+                    
+                    <!-- User Info (shown when logged in) -->
+                    <div class="user-info" id="userInfo" style="display: none;">
+                        <div class="user-avatar" id="userAvatar"></div>
+                        <span class="user-name" id="userName"></span>
+                        <button class="btn-logout" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Forum Page -->
+            <div id="forumPage" class="page active">
+                <!-- Welcome Banner -->
+                <div class="welcome-banner" id="welcomeBanner">
+                    <div class="banner-content">
+                        <i class="fas fa-user-secret banner-icon"></i>
+                        <h1>Anonim Forum'a Hoş Geldiniz!</h1>
+                        <p>Kimliğiniz tamamen gizli kalır. Özgürce düşüncelerinizi paylaşın!</p>
+                        <p class="banner-note">
+                            <i class="fas fa-info-circle"></i>
+                            Google ile giriş yapın ve anonim bir kullanıcı olarak foruma katılın.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Create Post Section -->
+                <div class="create-post-section" id="createPostSection" style="display: none;">
+                    <h2><i class="fas fa-pen"></i> Yeni Konu Oluştur</h2>
+                    <form id="createPostForm" class="create-post-form">
+                        <div class="form-group">
+                            <label for="postCategory">Kategori</label>
+                            <select id="postCategory" required>
+                                <option value="">Kategori Seçin</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="postTitle">Başlık</label>
+                            <input type="text" id="postTitle" placeholder="Konu başlığını yazın..." required maxlength="200">
+                        </div>
+                        <div class="form-group">
+                            <label for="postContent">İçerik</label>
+                            <textarea id="postContent" placeholder="Mesajınızı yazın..." required rows="5" maxlength="5000"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Paylaş
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Posts Section -->
+                <div class="posts-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-comments"></i> Son Konular</h2>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="all">
+                                <i class="fas fa-list"></i> Tümü
+                            </button>
+                            <button class="filter-btn" data-filter="recent">
+                                <i class="fas fa-clock"></i> En Yeni
+                            </button>
+                            <button class="filter-btn" data-filter="popular">
+                                <i class="fas fa-fire"></i> Popüler
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="postsContainer" class="posts-container">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Yükleniyor...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Page -->
+            <div id="categoriesPage" class="page">
+                <div class="page-header">
+                    <h1><i class="fas fa-th-large"></i> Kategoriler</h1>
+                    <p>İlginizi çeken konuları keşfedin</p>
+                </div>
+                
+                <div id="categoriesContainer" class="categories-grid">
+                    <!-- Categories will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Admin Page -->
+            <div id="adminPage" class="page">
+                <div class="page-header">
+                    <h1><i class="fas fa-shield-alt"></i> Admin Paneli</h1>
+                    <p>Kullanıcı yönetimi ve moderasyon</p>
+                </div>
+                
+                <div class="admin-tabs">
+                    <button class="admin-tab active" data-tab="users">
+                        <i class="fas fa-users"></i> Kullanıcılar
+                    </button>
+                    <button class="admin-tab" data-tab="posts">
+                        <i class="fas fa-comments"></i> Gönderiler
+                    </button>
+                    <button class="admin-tab" data-tab="stats">
+                        <i class="fas fa-chart-bar"></i> İstatistikler
+                    </button>
+                </div>
+
+                <div id="adminContent" class="admin-content">
+                    <!-- Admin content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Post Detail Modal -->
+    <div id="postModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <div id="postDetail" class="post-detail">
+                <!-- Post detail will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Anonim Forum - Tüm hakları saklıdır</p>
+            <p class="footer-note">
+                <i class="fas fa-shield-alt"></i> 
+                Kimliğiniz tamamen güvende - Özgürce paylaşın!
+            </p>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/forum.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
