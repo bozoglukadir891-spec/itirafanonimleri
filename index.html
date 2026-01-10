@@ -48,16 +48,16 @@
   <button onclick="sendMessage()">Gönder</button>
 </div>
 
-<!-- Firebase -->
+<!-- Firebase (compat) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
   /************ AYARLAR ************/
-  const ADMIN_KEY = "Nuri_46_"; // 🔴 BUNU DEĞİŞTİR
+  const ADMIN_KEY = "Nuri_46_";
   /********************************/
 
-  // Firebase config (seninki)
+  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyBkdgxCEFNNhZr7lCC4pCo8ENH_E3XXV_I",
     authDomain: "itirafanonimleri.firebaseapp.com",
@@ -70,10 +70,10 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  /************ ANONIM ID ************/
+  /************ ANONİM ID ************/
   let anonId = localStorage.getItem("anonId");
   if (!anonId) {
-    anonId = "Anonim#" + Math.floor(1000 + Math.random() * 9000);
+    anonId = "Anonim#" + Math.floor(_toggle = Math.random() * 9000 + 1000);
     localStorage.setItem("anonId", anonId);
   }
 
@@ -95,14 +95,14 @@
     .onSnapshot(snapshot => {
       messagesDiv.innerHTML = "";
       snapshot.forEach(doc => {
-        const d = doc.data();
+        const data = doc.data();
         const delBtn = isAdmin
           ? `<span class="admin" onclick="deleteMsg('${doc.id}')">🗑️</span>`
           : "";
 
         messagesDiv.innerHTML += `
           <p>
-            <b>${d.user}</b>: ${d.text}
+            🕵️ <b>${data.user}</b>: ${data.text}
             ${delBtn}
           </p>
         `;
